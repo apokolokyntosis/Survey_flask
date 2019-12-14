@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 import requests
 import numpy as np
 import io
-import matplotlib as plt
-from flask import Response
+import matplotlib.pyplot as plt
+import pandas as pd
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
@@ -25,27 +25,15 @@ url_results = "https://dxsurvey.com/api/MySurveys/getSurveyResults/{}?accessKey=
 
 
 @app.route('/')
-def hello_world():
-
+@app.route('/home')
+def home():
     return render_template('index.html')
 
 
 @app.route('/results')
-def generate_results():
-    data = load_data()
-
+def results():
     return render_template("results")
 
-
-
-def result_count():
-    data = load_data()
-    return "ResultCount: {}".format(data["ResultCount"])
-
-
-@app.route('/resultsoverview')
-def generate_overview():
-    data = load_data()
 
 
 @app.route('/emotionsavg')
@@ -60,7 +48,7 @@ def emotionscores():
 
 
 @app.route('/resultsraw')
-def results_raw():
+def resultsraw():
     data = load_data()
     return data
 
@@ -73,57 +61,69 @@ def plot_png():
         if "emotionsratings-widget" in entry.keys():
             scores.append(int(entry["emotionsratings-widget"]))
     x, y = np.unique(np.asarray(scores), return_counts=True)
-
     fig = create_figure(x, y)
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype="image/png")
 
 
-results_plot = {}
+@app.route('/bar')
+def plot():
+    return create_bar("question2")
+
+@app.route('/plot1')
+def plot1():
+    return render_template("results.html", plot = create_bar("question2"))
+
+
+def create_bar(q):
+    q_data = parse_data(q)
+    print(q_data)
+    labels = list(set(q_data))
+    print(labels)
+    keys, counts = np.unique(q_data, return_counts=True)
+    fig = create_figure(keys, counts)
+    plt.show()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype="image/png")
+    # ax1.pie(q_data, labels=labels, autopct='%1.1f%%',
+    #         shadow=True, startangle=0)
+    # ax1.axis('equal')
+    # fig1, ax1 = np.unique(np.asarray(q_data), return_counts=True)
+    # fig = create_figure(fig1, ax1)
+    # output = io.BytesIO()
+    # FigureCanvas(fig).print_png(output)
+    # return Response(output.getvalue(), mimetype="image/png")
+
+def create_pie1(q):
+    q_data = parse_data(q)
+    labels = list(set(q_data))
+    keys, counts = np.unique(q_data, return_counts=True)
+    plot = pd.Series().value_counts().plot('bar')
+    plt.show()
+    output = io.BytesIO()
+    FigureCanvas(plot).print_png(output)
+    return plot
+
+
 
 # loads mail addresses in a list
 def get_mail():
-    data = load_data()
-    mail_list = []
-    for entry in data["Data"]:
-        if "mail_form" in entry.keys():
-            mail_list.append((entry["mail_form"]))
+    mail_list = parse_data("mail_form")
     return mail_list
 
 
-# def create_plot_bin(name,category,answer):
-#     data=load_data()
-#     for answer in data["Data"]:
-#
-
-
-def create_plot(question, answer):
+def parse_data(q):
     data = load_data()
-    scores = []
+    q_results = []
     for entry in data["Data"]:
-        if "{}".format(question) in entry.keys():
-            scores.append((entry["".format(question)]))
-
-    labels =
-
-
-
-
-
-
-def create_plot_(name,category,answer):
-    data = load_data()
-    scores = []
-    for entry in data["Data"]:
-        if "{}".format(name) in entry.keys():
-            scores.append((entry["emotionsratings-widget"])
-    x, y = np.unique(np.asarray(scores), return_counts=True)
-
-    fig = create_figure(x, y)
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype="image/png")
+        if "{}".format(q) in entry.keys():
+            q_results.append(str(entry[q]))
+    # for debugging purposes only (print list as string)
+    # q_results_string = ", ".join(q_results)
+    # return q_results_string
+    return q_results
 
 
 def create_figure(x, y):
@@ -137,6 +137,11 @@ def load_data():
     results = requests.get(url=url_results)
     results_json = results.json()
     return results_json
+
+
+def result_count():
+    data = load_data()
+    return data["ResultCount"]
 
 
 if __name__ == '__main__':
