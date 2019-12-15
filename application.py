@@ -102,7 +102,7 @@ def create_pie(q):
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype="image/png")
 
-
+# TODO: auslagern
 def create_bar(q):
     plt.clf()
     dirname = os.path.dirname(__file__)
@@ -112,8 +112,13 @@ def create_bar(q):
     q_data = parse_data(q)
     keys, counts = np.unique(q_data, return_counts=True)
     y_pos = np.arange(len(keys))
-    plt.bar(y_pos, counts, color="lightskyblue")
+    plt.bar(y_pos, counts, color="lightskyblue", alpha=0.7)
+    yint = range((min(counts)), (max(counts))+2)
+    plt.yticks(yint)
     plt.xticks(y_pos, keys)
+    plt.ylabel('Anzahl')
+    plt.xlabel('Bewertung')
+    plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.2)
     fig = plt.gcf()
     #fig = create_figure(keys, counts)
     fig.suptitle(title, fontsize=16)
@@ -182,7 +187,8 @@ def result_count():
     data = load_data()
     return data["ResultCount"]
 
-parse_survey()
+create_bar("question1")
+create_pie("question2pie")
 
 if __name__ == '__main__':
     app.run(debug=True)
