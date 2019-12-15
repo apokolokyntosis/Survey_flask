@@ -18,8 +18,7 @@ application = app = Flask(__name__)
     # id e8e348cb-6a20-4b7a-8669-9bdb1b207e44
 
 
-id = "990c9984-470b-4581-bcbf-0395366a5afd"
-result_id = "c53520d2-4bfc-4af7-ac15-42cb129eae86"
+id = "ee67b846-7a75-44af-9ea4-ab88714fde70"
 accesskey = "3bc43120cf784d489aefbc4cec9b1268"
 url_results = "https://dxsurvey.com/api/MySurveys/getSurveyResults/{}?accessKey={}".format(id, accesskey)
 url_survey = "http://api.dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(id)
@@ -72,14 +71,6 @@ def resultsraw():
     data = load_data()
     return data
 
-
-# @app.route('/bar')
-# def plot():
-#     return create_bar("question2")
-#
-# @app.route('/pie')
-# def pie():
-#     return create_pie("question2")
 
 def get_questions():
     data = load_data()
@@ -146,9 +137,16 @@ def parse_data(q):
 def parse_survey():
     survey = load_survey()
     print("survey:", survey)
-    title_dict = {}
-    for page in survey["pages"]:
-        title_dict[page["elements"][0]["name"]] = page["elements"][0]["title"]
+    print("key:", survey["pages"][0]["elements"][0]["name"])
+    print("value:", survey["pages"][0]["elements"][0]["title"]["de"])
+    title_dict = {"question1": "Wie hat Ihnen die heutige Veranstaltung gefallen?",
+                  "question2pie": "Fühlen Sie sich ausreichend repräsentiert?",
+                  "question3pie": "Fühlen Sie sich ausreichend informiert?",
+                  "question4input": "Welchem Thema wurde ihrer Meinung\n nach noch nicht genug Beachtung geschenkt?"
+                  }
+    # for page in survey["pages"]:
+    #     title_dict[page[0]["elements"][0]["name"]] = page[0]["elements"][0]["title"]["de"]
+    #     print(title_dict)
     print("titledict:", title_dict)
     return title_dict
 
@@ -176,6 +174,7 @@ def result_count():
     data = load_data()
     return data["ResultCount"]
 
+parse_survey()
 
 if __name__ == '__main__':
     app.run(debug=True)
