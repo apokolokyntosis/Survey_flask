@@ -18,11 +18,12 @@ application = app = Flask(__name__)
     # id e8e348cb-6a20-4b7a-8669-9bdb1b207e44
 
 
-id = "e8e348cb-6a20-4b7a-8669-9bdb1b207e44"
+id = "990c9984-470b-4581-bcbf-0395366a5afd"
 result_id = "c53520d2-4bfc-4af7-ac15-42cb129eae86"
 accesskey = "3bc43120cf784d489aefbc4cec9b1268"
 url_results = "https://dxsurvey.com/api/MySurveys/getSurveyResults/{}?accessKey={}".format(id, accesskey)
-url_survey = "https://dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(id)
+url_survey = "http://api.dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(id)
+
 
 @app.route('/')
 @app.route('/home')
@@ -33,12 +34,13 @@ def home():
 @app.route('/results')
 def results():
     questions = get_questions()
+    print("questions", questions)
     for question in questions:
         if question.endswith("pie"):
-            create_pie("{}".format(question))
+            create_pie(question)
         else:
-            create_bar("{}".format(question))
-    return render_template("results.html", questions = questions)
+            create_bar(question)
+    return render_template("results.html", questions=questions)
 
 
 # @app.route('/emotionsavg')
@@ -94,13 +96,14 @@ def get_questions():
 def create_pie(q):
     dirname = os.path.dirname(__file__)
     output_path = os.path.join(dirname, "static/assets/charts")
+    title = parse_survey()[q]
     q_data = parse_data(q)
-    labels = list(set(q_data))
     keys, counts = np.unique(q_data, return_counts=True)
     plt.pie(counts, labels=keys, autopct='%1.1f%%',
             shadow=True, startangle=0)
     plt.axis('equal')
     fig = plt.gcf()
+    fig.suptitle(title, fontsize=16)
     plt.savefig("{}/{}.png".format(output_path, q))
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
@@ -110,12 +113,12 @@ def create_pie(q):
 def create_bar(q):
     dirname = os.path.dirname(__file__)
     output_path = os.path.join(dirname, "static/assets/charts")
+    title = parse_survey()[q]
+    print("title:", title)
     q_data = parse_data(q)
-    print(q_data)
-    labels = list(set(q_data))
-    print(labels)
     keys, counts = np.unique(q_data, return_counts=True)
     fig = create_figure(keys, counts)
+    fig.suptitle(title, fontsize=16)
     fig.savefig("{}/{}.png".format(output_path, q))
     plt.show()
     output = io.BytesIO()
@@ -137,6 +140,17 @@ def parse_data(q):
         if "{}".format(q) in entry.keys():
             q_results.append(str(entry[q]))
     return q_results
+
+# parse survey_json for question titles -> returns dict with question
+# as key, and title as value
+def parse_survey():
+    survey = load_survey()
+    print("survey:", survey)
+    title_dict = {}
+    for page in survey["pages"]:
+        title_dict[page["elements"][0]["name"]] = page["elements"][0]["title"]
+    print("titledict:", title_dict)
+    return title_dict
 
 
 def create_figure(x, y):
