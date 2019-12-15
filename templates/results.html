@@ -5,11 +5,17 @@
     <title>Results page</title>
 </head>
 <body>
-    <img src="/static/assets/charts/questions2.png" alt="my plot">
-    <img src="/static/assets/charts/questions2_pie.png" alt="my plot">
-    <img src="/bar" alt="my plot">
-    <img src="/pie" alt="my plot">
-    <img src="{{ plot }}" alt="plot jinja">
+    {% for question in questions %}
+        <img src="static/assets/charts/{{question}}.png" alt="chart">
+    {%  endfor %}
+
+
+{#    <img src="static/assets/charts/questions2.png" alt="my plot">#}
+{#    <img src="static/assets/charts/questions2_pie.png" alt="my plot">#}
+{#    <img src="/bar" alt="my plot">#}
+{#    <img src="/pie" alt="my plot">#}
+{#    <img src="{{ plot }}" alt="plot jinja">#}
 
 </body>
+
 </html>

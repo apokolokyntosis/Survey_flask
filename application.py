@@ -33,8 +33,13 @@ def home():
 
 @app.route('/results')
 def results():
-    return render_template("results.html")
-
+    questions = get_questions()
+    for question in questions:
+        if question.endswith("pie"):
+            create_pie("{}".format(question))
+        else:
+            create_bar("{}".format(question))
+    return render_template("results.html", questions = questions)
 
 
 @app.route('/emotionsavg')
@@ -45,7 +50,6 @@ def emotionscores():
         if "emotionsratings-widget" in entry.keys():
             scores.append(int(entry["emotionsratings-widget"]))
     return "Emotions average: " + str(sum(scores) / len(scores))
-
 
 
 @app.route('/resultsraw')
@@ -76,24 +80,32 @@ def plot():
 def pie():
     return create_pie("question2")
 
+def get_questions():
+    data = load_data()
+    questions = []
+    first_dict = data["Data"][0]
+    print(first_dict)
+    for key in first_dict:
+        if key.startswith("question"):
+            questions.append(str(key))
+    print(questions)
+    return questions
+
 
 def create_pie(q):
     dirname = os.path.dirname(__file__)
     output_path = os.path.join(dirname, "static/assets/charts")
     q_data = parse_data(q)
-    print(q_data)
     labels = list(set(q_data))
     keys, counts = np.unique(q_data, return_counts=True)
-    print(keys, counts)
     plt.pie(counts, labels=keys, autopct='%1.1f%%',
             shadow=True, startangle=0)
     plt.axis('equal')
     fig = plt.gcf()
-    plt.savefig("{}/{}_pie.png".format(output_path, q))
+    plt.savefig("{}/{}.png".format(output_path, q))
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype="image/png")
-
 
 
 def create_bar(q):
@@ -112,22 +124,19 @@ def create_bar(q):
     return Response(output.getvalue(), mimetype="image/png")
 
 
-
 # loads mail addresses in a list
 def get_mail():
     mail_list = parse_data("mail_form")
     return mail_list
 
 
+# parses values for a specific question into a list
 def parse_data(q):
     data = load_data()
     q_results = []
     for entry in data["Data"]:
         if "{}".format(q) in entry.keys():
             q_results.append(str(entry[q]))
-    # for debugging purposes only (print list as string)
-    # q_results_string = ", ".join(q_results)
-    # return q_results_string
     return q_results
 
 

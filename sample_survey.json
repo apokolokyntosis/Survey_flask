@@ -25,6 +25,14 @@
       "question2": "foo",
       "question3": false,
       "HappendAt": "\/Date(1576320627016)\/"
+    },
+    {
+      "question1": [
+        "item2"
+      ],
+      "question2": "foo",
+      "question3": false,
+      "HappendAt": "\/Date(1576320627016)\/"
     }
   ]
 }
