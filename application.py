@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response
 import requests
 import numpy as np
 import io
+import os
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -32,7 +33,7 @@ def home():
 
 @app.route('/results')
 def results():
-    return render_template("results")
+    return render_template("results.html")
 
 
 
@@ -71,40 +72,44 @@ def plot_png():
 def plot():
     return create_bar("question2")
 
-@app.route('/plot1')
-def plot1():
-    return render_template("results.html", plot = create_bar("question2"))
+@app.route('/pie')
+def pie():
+    return create_pie("question2")
+
+
+def create_pie(q):
+    dirname = os.path.dirname(__file__)
+    output_path = os.path.join(dirname, "static/assets/charts")
+    q_data = parse_data(q)
+    print(q_data)
+    labels = list(set(q_data))
+    keys, counts = np.unique(q_data, return_counts=True)
+    print(keys, counts)
+    plt.pie(counts, labels=keys, autopct='%1.1f%%',
+            shadow=True, startangle=0)
+    plt.axis('equal')
+    fig = plt.gcf()
+    plt.savefig("{}/{}_pie.png".format(output_path, q))
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype="image/png")
+
 
 
 def create_bar(q):
+    dirname = os.path.dirname(__file__)
+    output_path = os.path.join(dirname, "static/assets/charts")
     q_data = parse_data(q)
     print(q_data)
     labels = list(set(q_data))
     print(labels)
     keys, counts = np.unique(q_data, return_counts=True)
     fig = create_figure(keys, counts)
+    fig.savefig("{}/{}.png".format(output_path, q))
     plt.show()
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype="image/png")
-    # ax1.pie(q_data, labels=labels, autopct='%1.1f%%',
-    #         shadow=True, startangle=0)
-    # ax1.axis('equal')
-    # fig1, ax1 = np.unique(np.asarray(q_data), return_counts=True)
-    # fig = create_figure(fig1, ax1)
-    # output = io.BytesIO()
-    # FigureCanvas(fig).print_png(output)
-    # return Response(output.getvalue(), mimetype="image/png")
-
-def create_pie1(q):
-    q_data = parse_data(q)
-    labels = list(set(q_data))
-    keys, counts = np.unique(q_data, return_counts=True)
-    plot = pd.Series().value_counts().plot('bar')
-    plt.show()
-    output = io.BytesIO()
-    FigureCanvas(plot).print_png(output)
-    return plot
 
 
 
