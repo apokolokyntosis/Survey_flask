@@ -1,10 +1,9 @@
 from flask import Flask, render_template, Response
 import requests
-import numpy as np
 import io
 import os
 import matplotlib.pyplot as plt
-import pandas as pd
+import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
@@ -22,8 +21,8 @@ application = app = Flask(__name__)
 id = "e8e348cb-6a20-4b7a-8669-9bdb1b207e44"
 result_id = "c53520d2-4bfc-4af7-ac15-42cb129eae86"
 accesskey = "3bc43120cf784d489aefbc4cec9b1268"
-url_results = "https://dxsurvey.com/api/MySurveys/getSurveyResults/{}?accessKey={}".format(id,accesskey)
-
+url_results = "https://dxsurvey.com/api/MySurveys/getSurveyResults/{}?accessKey={}".format(id, accesskey)
+url_survey = "https://dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(id)
 
 @app.route('/')
 @app.route('/home')
@@ -42,14 +41,28 @@ def results():
     return render_template("results.html", questions = questions)
 
 
-@app.route('/emotionsavg')
-def emotionscores():
-    data = load_data()
-    scores = []
-    for entry in data["Data"]:
-        if "emotionsratings-widget" in entry.keys():
-            scores.append(int(entry["emotionsratings-widget"]))
-    return "Emotions average: " + str(sum(scores) / len(scores))
+# @app.route('/emotionsavg')
+# def emotionscores():
+#     data = load_data()
+#     scores = []
+#     for entry in data["Data"]:
+#         if "emotionsratings-widget" in entry.keys():
+#             scores.append(int(entry["emotionsratings-widget"]))
+#     return "Emotions average: " + str(sum(scores) / len(scores))
+
+
+# @app.route('/emotionsplot')
+# def plot_png():
+#     data = load_data()
+#     scores = []
+#     for entry in data["Data"]:
+#         if "emotionsratings-widget" in entry.keys():
+#             scores.append(int(entry["emotionsratings-widget"]))
+#     x, y = np.unique(np.asarray(scores), return_counts=True)
+#     fig = create_figure(x, y)
+#     output = io.BytesIO()
+#     FigureCanvas(fig).print_png(output)
+#     return Response(output.getvalue(), mimetype="image/png")
 
 
 @app.route('/resultsraw')
@@ -58,27 +71,13 @@ def resultsraw():
     return data
 
 
-@app.route('/emotionsplot')
-def plot_png():
-    data = load_data()
-    scores = []
-    for entry in data["Data"]:
-        if "emotionsratings-widget" in entry.keys():
-            scores.append(int(entry["emotionsratings-widget"]))
-    x, y = np.unique(np.asarray(scores), return_counts=True)
-    fig = create_figure(x, y)
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype="image/png")
-
-
-@app.route('/bar')
-def plot():
-    return create_bar("question2")
-
-@app.route('/pie')
-def pie():
-    return create_pie("question2")
+# @app.route('/bar')
+# def plot():
+#     return create_bar("question2")
+#
+# @app.route('/pie')
+# def pie():
+#     return create_pie("question2")
 
 def get_questions():
     data = load_data()
@@ -151,6 +150,12 @@ def load_data():
     results = requests.get(url=url_results)
     results_json = results.json()
     return results_json
+
+
+def load_survey():
+    survey = requests.get(url=url_survey)
+    survey_json = survey.json()
+    return survey_json
 
 
 def result_count():
