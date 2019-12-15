@@ -85,13 +85,15 @@ def get_questions():
 
 
 def create_pie(q):
+    plt.clf()
     dirname = os.path.dirname(__file__)
     output_path = os.path.join(dirname, "static/assets/charts")
     title = parse_survey()[q]
     q_data = parse_data(q)
     keys, counts = np.unique(q_data, return_counts=True)
-    plt.pie(counts, labels=keys, autopct='%1.1f%%',
-            shadow=True, startangle=0)
+    colors = ['lightskyblue', 'lightcoral']
+    plt.pie(counts, labels=keys, autopct='%1.1f%%', colors=colors,
+            shadow=False, startangle=0)
     plt.axis('equal')
     fig = plt.gcf()
     fig.suptitle(title, fontsize=16)
@@ -102,13 +104,18 @@ def create_pie(q):
 
 
 def create_bar(q):
+    plt.clf()
     dirname = os.path.dirname(__file__)
     output_path = os.path.join(dirname, "static/assets/charts")
     title = parse_survey()[q]
     print("title:", title)
     q_data = parse_data(q)
     keys, counts = np.unique(q_data, return_counts=True)
-    fig = create_figure(keys, counts)
+    y_pos = np.arange(len(keys))
+    plt.bar(y_pos, counts, color="lightskyblue")
+    plt.xticks(y_pos, keys)
+    fig = plt.gcf()
+    #fig = create_figure(keys, counts)
     fig.suptitle(title, fontsize=16)
     fig.savefig("{}/{}.png".format(output_path, q))
     plt.show()
@@ -151,6 +158,7 @@ def parse_survey():
     return title_dict
 
 
+# delete
 def create_figure(x, y):
     fig = Figure()
     axis = fig.add_subplot(1, 1, 1)
