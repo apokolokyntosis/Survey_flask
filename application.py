@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+from wordcloud import WordCloud
 
 
 application = app = Flask(__name__)
@@ -18,7 +19,7 @@ application = app = Flask(__name__)
     # id e8e348cb-6a20-4b7a-8669-9bdb1b207e44
 
 
-id = "ee67b846-7a75-44af-9ea4-ab88714fde70"
+id = "7b8ea9b3-284d-42fb-b08a-09ceb317cf2e"
 accesskey = "3bc43120cf784d489aefbc4cec9b1268"
 url_results = "https://dxsurvey.com/api/MySurveys/getSurveyResults/{}?accessKey={}".format(id, accesskey)
 url_survey = "http://api.dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(id)
@@ -33,13 +34,18 @@ def home():
 @app.route('/results')
 def results():
     questions = get_questions()
-    print("questions", questions)
     for question in questions:
         if question.endswith("pie"):
             create_pie(question)
+        elif question.endswith("cloud"):
+            create_cloud(question)
         else:
             create_bar(question)
-    return render_template("results.html", questions=questions)
+    return render_template("results.html", questions=questions)\
+
+@app.route('/results1')
+def results1():
+    return render_template("survey.html")
 
 
 # @app.route('/emotionsavg')
@@ -76,11 +82,9 @@ def get_questions():
     data = load_data()
     questions = []
     first_dict = data["Data"][0]
-    print(first_dict)
     for key in first_dict:
         if key.startswith("question"):
             questions.append(str(key))
-    print(questions)
     return questions
 
 
@@ -102,13 +106,13 @@ def create_pie(q):
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype="image/png")
 
+
 # TODO: auslagern
 def create_bar(q):
     plt.clf()
     dirname = os.path.dirname(__file__)
     output_path = os.path.join(dirname, "static/assets/charts")
     title = parse_survey()[q]
-    print("title:", title)
     q_data = parse_data(q)
     keys, counts = np.unique(q_data, return_counts=True)
     y_pos = np.arange(len(keys))
@@ -121,6 +125,26 @@ def create_bar(q):
     plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.2)
     fig = plt.gcf()
     #fig = create_figure(keys, counts)
+    fig.suptitle(title, fontsize=16)
+    fig.savefig("{}/{}.png".format(output_path, q))
+    plt.show()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype="image/png")
+
+
+def create_cloud(q):
+    plt.clf()
+    dirname = os.path.dirname(__file__)
+    output_path = os.path.join(dirname, "static/assets/charts")
+    title = parse_survey()[q]
+    q_data = parse_data(q)
+    cloud_list = " ".join(q_data)
+    wordcloud = WordCloud(width=480, height=480, margin=0, background_color="lightskyblue").generate(cloud_list)
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.margins(x=0,y=0)
+    fig = plt.gcf()
     fig.suptitle(title, fontsize=16)
     fig.savefig("{}/{}.png".format(output_path, q))
     plt.show()
@@ -148,18 +172,14 @@ def parse_data(q):
 # as key, and title as value
 def parse_survey():
     survey = load_survey()
-    print("survey:", survey)
-    print("key:", survey["pages"][0]["elements"][0]["name"])
-    print("value:", survey["pages"][0]["elements"][0]["title"]["de"])
     title_dict = {"question1": "Wie hat Ihnen die heutige Veranstaltung gefallen?",
                   "question2pie": "Fühlen Sie sich ausreichend repräsentiert?",
                   "question3pie": "Fühlen Sie sich ausreichend informiert?",
-                  "question4input": "Welchem Thema wurde ihrer Meinung\n nach noch nicht genug Beachtung geschenkt?"
+                  "question4cloud": "Welchem Thema wurde ihrer Meinung\n nach noch nicht genug Beachtung geschenkt?"
                   }
     # for page in survey["pages"]:
     #     title_dict[page[0]["elements"][0]["name"]] = page[0]["elements"][0]["title"]["de"]
     #     print(title_dict)
-    print("titledict:", title_dict)
     return title_dict
 
 
@@ -187,8 +207,9 @@ def result_count():
     data = load_data()
     return data["ResultCount"]
 
-create_bar("question1")
-create_pie("question2pie")
+# create_bar("question1")
+# create_pie("question2pie")
+# create_cloud("question4input")
 
 if __name__ == '__main__':
     app.run(debug=True)

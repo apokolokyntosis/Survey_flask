@@ -1,4 +1,4 @@
-Survey.StylesManager.applyTheme("bootstrap");
+Survey.StylesManager.applyTheme("darkblue");
 
 var surveyJSON = { surveyId: 'ee67b846-7a75-44af-9ea4-ab88714fde70'}
 
