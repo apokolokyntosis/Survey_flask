@@ -28,7 +28,7 @@ url_survey = "http://api.dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(i
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('index.html')
+    return render_template('index1.html')
 
 
 @app.route('/results')
@@ -41,7 +41,7 @@ def results():
             create_cloud(question)
         else:
             create_bar(question)
-    return render_template("results.html", questions=questions)\
+    return render_template("results1.html", questions=questions)\
 
 @app.route('/results1')
 def results1():
@@ -96,7 +96,9 @@ def create_pie(q):
     q_data = parse_data(q)
     keys, counts = np.unique(q_data, return_counts=True)
     colors = ['lightskyblue', 'lightcoral']
-    plt.pie(counts, labels=keys, autopct='%1.1f%%', colors=colors,
+    # debug
+    labels = ["Nein", "Ja"]
+    plt.pie(counts, labels=labels, autopct='%1.1f%%', colors=colors,
             shadow=False, startangle=0)
     plt.axis('equal')
     fig = plt.gcf()
@@ -127,7 +129,7 @@ def create_bar(q):
     #fig = create_figure(keys, counts)
     fig.suptitle(title, fontsize=16)
     fig.savefig("{}/{}.png".format(output_path, q))
-    plt.show()
+    # plt.show()
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype="image/png")
@@ -147,7 +149,7 @@ def create_cloud(q):
     fig = plt.gcf()
     fig.suptitle(title, fontsize=16)
     fig.savefig("{}/{}.png".format(output_path, q))
-    plt.show()
+    # plt.show()
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype="image/png")
