@@ -8,15 +8,14 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wordcloud import WordCloud
 
-
 application = app = Flask(__name__)
 
 # Survey1:
-    # id  75e58d2a-5f02-4914-8181-a52047a3f76f
-    # accesskey 3bc43120cf784d489aefbc4cec9b1268
-    # ResultId 084644b9-b734-4d00-9afe-1fa82b803cb2
+# id  75e58d2a-5f02-4914-8181-a52047a3f76f
+# accesskey 3bc43120cf784d489aefbc4cec9b1268
+# ResultId 084644b9-b734-4d00-9afe-1fa82b803cb2
 # Survey 2:
-    # id e8e348cb-6a20-4b7a-8669-9bdb1b207e44
+# id e8e348cb-6a20-4b7a-8669-9bdb1b207e44
 
 
 id = "7b8ea9b3-284d-42fb-b08a-09ceb317cf2e"
@@ -41,7 +40,8 @@ def results():
             create_cloud(question)
         else:
             create_bar(question)
-    return render_template("results1.html", questions=questions)\
+    return render_template("results1.html", questions=questions)
+
 
 @app.route('/results1')
 def results1():
@@ -119,14 +119,14 @@ def create_bar(q):
     keys, counts = np.unique(q_data, return_counts=True)
     y_pos = np.arange(len(keys))
     plt.bar(y_pos, counts, color="lightskyblue", alpha=0.7)
-    yint = range((min(counts)), (max(counts))+2)
+    yint = range((min(counts)), (max(counts)) + 2)
     plt.yticks(yint)
     plt.xticks(y_pos, keys)
     plt.ylabel('Anzahl')
     plt.xlabel('Bewertung')
     plt.grid(color='#95a5a6', linestyle='--', linewidth=2, axis='y', alpha=0.2)
     fig = plt.gcf()
-    #fig = create_figure(keys, counts)
+    # fig = create_figure(keys, counts)
     fig.suptitle(title, fontsize=16)
     fig.savefig("{}/{}.png".format(output_path, q))
     # plt.show()
@@ -145,7 +145,7 @@ def create_cloud(q):
     wordcloud = WordCloud(width=480, height=480, margin=0, background_color="lightskyblue").generate(cloud_list)
     plt.imshow(wordcloud, interpolation='bilinear')
     plt.axis("off")
-    plt.margins(x=0,y=0)
+    plt.margins(x=0, y=0)
     fig = plt.gcf()
     fig.suptitle(title, fontsize=16)
     fig.savefig("{}/{}.png".format(output_path, q))
@@ -169,6 +169,7 @@ def parse_data(q):
         if "{}".format(q) in entry.keys():
             q_results.append(str(entry[q]))
     return q_results
+
 
 # parse survey_json for question titles -> returns dict with question
 # as key, and title as value
