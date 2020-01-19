@@ -8,6 +8,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wordcloud import WordCloud
 
+
 import surveyjs_handler
 import json_serializer
 
