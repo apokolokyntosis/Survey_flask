@@ -1,15 +1,16 @@
 import json
 
+
 survey = {}
 survey["pages"] = []
 
 
 def create_json():
-    with open("survey_manual.json", "w") as write_file:
+    with open("survey_manual1.json", "w") as write_file:
         json.dump(survey, write_file, indent=4)
 
 
-def add_question(question_type, question_text, min, max, req, comment):
+def add_question(question_type, question_text, min, max):
     if question_type == "rating":
         content = [{
             "type": question_type,
@@ -29,7 +30,7 @@ def add_question(question_type, question_text, min, max, req, comment):
             "name": "question_pie",  # FIXME
             "title": question_text,
             "indent": 5,
-            "isRequired": req,
+            "isRequired": "true",
             "labelTrue": "Ja",
             "labelFalse": "Nein"
         }]
@@ -51,10 +52,4 @@ def add_question(question_type, question_text, min, max, req, comment):
 
 # TODO add progressbar
 # showProgressBar: "bottom"
-
-
-add_question("rating", "test", 0, 5, "foo", "asd")
-add_question("rating", "test", 0, 5, "foo", "asd")
-add_question("boolean", "test", 0, 5, "foo", "asd")
-create_json()
 

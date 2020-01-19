@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, flash, url_for, redirect
 import requests
 import io
 import os
@@ -8,11 +8,14 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wordcloud import WordCloud
 
+from forms import CreateSurveyForm
 
 import surveyjs_handler
 import json_serializer
 
 application = app = Flask(__name__)
+
+app.config["SECRET_KEY"] = "760bb722fb969ca1ee600a8ac52b6a7d"
 
 # Survey1:
 # id  75e58d2a-5f02-4914-8181-a52047a3f76f
@@ -34,7 +37,26 @@ def home():
     return render_template('index1.html')
 
 
-@app.route('/results')
+@app.route("/create", methods=["GET", "POST"])
+def create():
+    form = CreateSurveyForm()
+    if form.validate_on_submit():
+        # json_serializer.init()
+        if form.question_type.data == "rating":
+            json_serializer.add_question("rating", form.question_title.data, 0, 5)
+        json_serializer.create_json()
+        surveyjs_handler.new_survey(form.survey_name.data)
+        flash("Survey {} created".format(form.survey_name.data), "success")
+
+        return redirect(url_for("create"))
+    return render_template("creation.html", title="Create a survey", form=form)
+
+
+@app.route("/survey")
+def survey():
+    return render_template("survey.html", title="survey")
+
+@app.route("/results")
 def results():
     questions = get_questions()
     for question in questions:
@@ -50,30 +72,6 @@ def results():
 @app.route('/results1')
 def results1():
     return render_template("survey.html")
-
-
-# @app.route('/emotionsavg')
-# def emotionscores():
-#     data = load_data()
-#     scores = []
-#     for entry in data["Data"]:
-#         if "emotionsratings-widget" in entry.keys():
-#             scores.append(int(entry["emotionsratings-widget"]))
-#     return "Emotions average: " + str(sum(scores) / len(scores))
-
-
-# @app.route('/emotionsplot')
-# def plot_png():
-#     data = load_data()
-#     scores = []
-#     for entry in data["Data"]:
-#         if "emotionsratings-widget" in entry.keys():
-#             scores.append(int(entry["emotionsratings-widget"]))
-#     x, y = np.unique(np.asarray(scores), return_counts=True)
-#     fig = create_figure(x, y)
-#     output = io.BytesIO()
-#     FigureCanvas(fig).print_png(output)
-#     return Response(output.getvalue(), mimetype="image/png")
 
 
 @app.route('/resultsraw')
@@ -214,9 +212,30 @@ def result_count():
     data = load_data()
     return data["ResultCount"]
 
-# create_bar("question1")
-# create_pie("question2pie")
-# create_cloud("question4input")
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+# @app.route('/emotionsavg')
+# def emotionscores():
+#     data = load_data()
+#     scores = []
+#     for entry in data["Data"]:
+#         if "emotionsratings-widget" in entry.keys():
+#             scores.append(int(entry["emotionsratings-widget"]))
+#     return "Emotions average: " + str(sum(scores) / len(scores))
+
+
+# @app.route('/emotionsplot')
+# def plot_png():
+#     data = load_data()
+#     scores = []
+#     for entry in data["Data"]:
+#         if "emotionsratings-widget" in entry.keys():
+#             scores.append(int(entry["emotionsratings-widget"]))
+#     x, y = np.unique(np.asarray(scores), return_counts=True)
+#     fig = create_figure(x, y)
+#     output = io.BytesIO()
+#     FigureCanvas(fig).print_png(output)
+#     return Response(output.getvalue(), mimetype="image/png")
