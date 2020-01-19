@@ -54,6 +54,7 @@ def add_question(question_type, question_text, min, max, req, comment):
 
 
 add_question("rating", "test", 0, 5, "foo", "asd")
+add_question("rating", "test", 0, 5, "foo", "asd")
 add_question("boolean", "test", 0, 5, "foo", "asd")
 create_json()
 

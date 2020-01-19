@@ -1,23 +1,36 @@
 import requests
+import json
 
+# {Id: [A survey unique indentificator.], Json: [A new json string]}
 
-id = "7b8ea9b3-284d-42fb-b08a-09ceb317cf2e"
 accesskey = "3bc43120cf784d489aefbc4cec9b1268"
 url_get_results = "https://dxsurvey.com/api/MySurveys/getSurveyResults/{}?accessKey={}".format(id, accesskey)
-url_get_survey = "http://api.dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(id)
-# url_create_survey = "https://dxsurvey.com/api/MySurveys/create?accessKey={}&name={}&ownerId={}".format(
-#         accesskey, survey_name, owner_id)
 
-def upload_survey():
-    survey_name = "testupload"
-    owner_id = ""
-    url_create_survey = "https://dxsurvey.com/api/MySurveys/create?accessKey={}&name={}&ownerId={}".format(
-        accesskey, survey_name, owner_id)
-    temp_id = requests.get(url=url_create_survey)
-    print(temp_id)
-
-upload_survey()
+with open("survey_manual.json", "r") as read_file:
+    survey_json = json.load(read_file)
 
 
+def upload_survey(name):
+    url_create_survey = "https://dxsurvey.com/api/MySurveys/create?accessKey={}&name={}&ownerId=".format(
+        accesskey, name)
+    response = requests.get(url=url_create_survey)
+    json_response = response.json()
+    id_new = json_response.get("Id")
+    return id_new
+
+
+def change_survey():
+    url_change_survey = "https://dxsurvey.com/api/MySurveys/changeJson?accessKey={}".format(accesskey)
+    response = requests.post(url=url_change_survey, json=post_survey_json)
+    print(response.request.body)
+
+id = upload_survey("test")
+
+post_survey_json = {
+  "Id": id,
+  "Text": str(survey_json),
+}
+
+change_survey()
 
 
