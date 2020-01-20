@@ -6,7 +6,7 @@ survey["pages"] = []
 
 
 def create_json():
-    with open("survey_manual1.json", "w") as write_file:
+    with open("temp_survey.json", "w") as write_file:
         json.dump(survey, write_file, indent=4)
 
 

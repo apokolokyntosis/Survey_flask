@@ -1,22 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Results page</title>
-</head>
-<body>
-    <div style="text-align: right"><img src="../static/assets/img/hamburg_img.png" width="220" /></div>
+{% extends "base.html" %}
+
+{% block content %}
     {% for question in questions %}
         <img src="static/assets/charts/{{question}}.png" alt="chart">
     {%  endfor %}
+{%  endblock %}
 
 
+
+
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>Results page</title>#}
+{#</head>#}
+{#<body>#}
+{#    <div style="text-align: right"><img src="../static/assets/img/hamburg_img.png" width="220" /></div>#}
+{#    {% for question in questions %}#}
+{#        <img src="static/assets/charts/{{question}}.png" alt="chart">#}
+{#    {%  endfor %}#}
+{##}
+{##}
 {#    <img src="static/assets/charts/questions2.png" alt="my plot">#}
 {#    <img src="static/assets/charts/questions2_pie.png" alt="my plot">#}
 {#    <img src="/bar" alt="my plot">#}
 {#    <img src="/pie" alt="my plot">#}
 {#    <img src="{{ plot }}" alt="plot jinja">#}
-
-</body>
-
-</html>
+{##}
+{#</body>#}
+{##}
+{#</html>#}

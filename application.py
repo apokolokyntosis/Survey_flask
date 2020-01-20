@@ -41,20 +41,32 @@ def home():
 def create():
     form = CreateSurveyForm()
     if form.validate_on_submit():
-        # json_serializer.init()
-        if form.question_type.data == "rating":
-            json_serializer.add_question("rating", form.question_title.data, 0, 5)
-        json_serializer.create_json()
-        surveyjs_handler.new_survey(form.survey_name.data)
-        flash("Survey {} created".format(form.survey_name.data), "success")
-
-        return redirect(url_for("create"))
+        if form.submit_question.data:
+            if form.question_type.data == "rating":
+                json_serializer.add_question("rating", form.question_title.data, 0, 5)
+            if form.question_type.data == "boolean":
+                json_serializer.add_question("boolean", form.question_title.data, 0, 5)
+            if form.question_type.data == "comment":
+                json_serializer.add_question("comment", form.question_title.data, 0, 5)
+            flash("Question added", "success")
+            return redirect(url_for("create"))
+        if form.submit_survey.data:
+            json_serializer.create_json()
+            surveyjs_handler.new_survey(form.survey_name.data)
+            flash("Survey {} created".format(form.survey_name.data), "success")
+            return redirect(url_for("about"))
     return render_template("creation.html", title="Create a survey", form=form)
 
 
 @app.route("/survey")
 def survey():
     return render_template("survey.html", title="survey")
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html", title="about")
+
 
 @app.route("/results")
 def results():
@@ -66,7 +78,7 @@ def results():
             create_cloud(question)
         else:
             create_bar(question)
-    return render_template("results1.html", questions=questions)
+    return render_template("results.html", questions=questions)
 
 
 @app.route('/results1')
