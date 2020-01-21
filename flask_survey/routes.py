@@ -1,6 +1,6 @@
 from flask import render_template, flash, url_for, redirect, session
 from flask_survey.forms import CreateSurveyForm, AddQuestionsForm
-from flask_survey import app, json_serializer, surveyjs_handler, charts, parser
+from flask_survey import app, json_serializer, surveyjs_handler, charts, parser, lists
 
 
 @app.route('/')
@@ -48,6 +48,12 @@ def create():
 @app.route("/survey")
 def survey():
     return render_template("survey.html", title="survey")
+
+
+@app.route("/surveylist")
+def surveylist():
+    survey_list = lists.get_lists()
+    return render_template("surveylist.html", survey_list=survey_list)
 
 
 @app.route("/about")

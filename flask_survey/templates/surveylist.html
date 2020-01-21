@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{#{% block content %}#}
+{#    <div class="col-md-4">#}
+{#        <div class="content-section">#}
+{#            <h3>Our Sidebar</h3>#}
+{#            <p class='text-muted'>You can put any information here you'd like.#}
+{#              <ul class="list-group">#}
+{#                {% for survey in survey_list %}#}
+{#                    <li class="list-group-item list-group-item-light"> {{ survey.get("Name") }} | {{ survey.get("Id") }} </li>#}
+{#                {% endfor %}#}
+{#              </ul>#}
+{#            </p>#}
+{#        </div>#}
+{#    </div>#}
+{#{% endblock %}#}
+
+
+{% block content %}
+    {% for survey in survey_list %}
+        <div class="row">
+            <div class="col-sm">
+                {{ survey.get("Name") }}
+            </div>
+            <div class="col-sm">
+                {{ survey.get("Id") }}
+            </div>
+            <div class="col-sm">
+                {{ survey.get("PostId") }}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
