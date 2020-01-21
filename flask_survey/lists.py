@@ -11,16 +11,6 @@ def get_lists():
         accesskey)
     response = requests.get(url=url)
     r_json = response.json()
-    print(r_json)
     return r_json
 
-
-def prep_list():
-    survey_list = get_lists()
-    for x in survey_list:
-        name = survey_list[x].get("Name")
-        postid = survey_list[x].get("PostId")
-        resultid = survey_list[x].get("ResultId")
-        creation_date = survey_list[x].get("CreatedAt")
-        unique_id = survey_list[x].get("Id")
 

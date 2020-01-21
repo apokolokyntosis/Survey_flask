@@ -1,2 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 /Survey_flask.zip
+/flask_survey/static/assets/charts/question2pie.png
+/flask_survey/static/assets/charts/question3pie.png
+/flask_survey/static/assets/charts/question4cloud.png
+/flask_survey/static/assets/charts/question1.png
+/venv/
+/venv2/
