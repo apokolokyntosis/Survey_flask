@@ -13,5 +13,6 @@ class CreateSurveyForm(FlaskForm):
     submit_survey = SubmitField("Umfrage final erstellen")
     create_survey = SubmitField("Umfrage anlegen")
 
-
-
+class CreateSurveyFor(FlaskForm):
+    create_survey = SubmitField("Umfrage anlegen")
+    survey_name = StringField("Name der Umfrage")

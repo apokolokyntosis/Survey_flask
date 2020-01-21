@@ -24,7 +24,13 @@
                     {{ form.submit_survey(class="form-control form-control-lg") }}
                 </div>
             <fieldset>
-                {{ % for question in questions }}
+                {% for key, value in questions.items() %}
+                    <div>
+                        {{ key }}: {{value}}
+                    </div>
+                {% endfor %}
+
+
 
             </fieldset>
         </form>

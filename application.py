@@ -9,14 +9,14 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wordcloud import WordCloud
 
-from forms import CreateSurveyForm
+from forms import CreateSurveyForm, CreateSurveyFor
 
 import surveyjs_handler
 import json_serializer
 
 application = app = Flask(__name__)
 app.config["SECRET_KEY"] = "760bb722fb969ca1ee600a8ac52b6a7d"
-Session(app)
+# Session(app)
 
 # Survey1:
 # id  75e58d2a-5f02-4914-8181-a52047a3f76f
@@ -65,9 +65,10 @@ def addquestions():
 def create():
     form = CreateSurveyForm()
     if form.validate_on_submit():
-        session["active_survey_creation"] = form.survey_name.data
-        flash('Umfrage "{}" angelegt'.format(form.survey_name.data), "success")
-        return redirect(url_for("addquestions"))
+        if form.create_survey.data:
+            # session["active_survey_creation"] = form.survey_name.data
+            flash('Umfrage "{}" angelegt'.format(form.survey_name.data), "success")
+            return redirect(url_for("addquestions"))
     return render_template("creation_1.html", title="Neue Umfrage anlegen", form=form)
 
 

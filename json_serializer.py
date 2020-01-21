@@ -5,11 +5,14 @@ survey = {}
 survey["pages"] = []
 question_list = {}
 
+
+# creates a json from the dict
 def create_json():
     with open("temp_survey.json", "w") as write_file:
         json.dump(survey, write_file, indent=4)
 
 
+# adds question to the survey dict
 def add_question(question_type, question_text, min, max):
     if question_type == "rating":
         content = [{
@@ -54,6 +57,7 @@ def add_question(question_type, question_text, min, max):
         question_list[question_text] = question_type
 
 
+# Getter for the list of question shown during the creation process
 def get_questions():
     return question_list
 
