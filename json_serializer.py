@@ -3,7 +3,7 @@ import json
 
 survey = {}
 survey["pages"] = []
-
+question_list = {}
 
 def create_json():
     with open("temp_survey.json", "w") as write_file:
@@ -23,6 +23,7 @@ def add_question(question_type, question_text, min, max):
             "name": "",
             "elements": content,
         })
+        question_list[question_text] =  question_type
 
     elif question_type == "boolean":
         content = [{
@@ -38,6 +39,7 @@ def add_question(question_type, question_text, min, max):
             "name": "",
             "elements": content
         })
+        question_list[question_text] = question_type
 
     elif question_type == "comment":
         content = [{
@@ -49,6 +51,13 @@ def add_question(question_type, question_text, min, max):
             "name": "",
             "elements": content
         })
+        question_list[question_text] = question_type
+
+
+def get_questions():
+    return question_list
+
+
 
 # TODO add progressbar
 # showProgressBar: "bottom"

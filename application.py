@@ -1,4 +1,5 @@
-from flask import Flask, render_template, Response, flash, url_for, redirect
+from flask import Flask, render_template, Response, flash, url_for, redirect, session
+from flask_session import Session
 import requests
 import io
 import os
@@ -14,8 +15,8 @@ import surveyjs_handler
 import json_serializer
 
 application = app = Flask(__name__)
-
 app.config["SECRET_KEY"] = "760bb722fb969ca1ee600a8ac52b6a7d"
+Session(app)
 
 # Survey1:
 # id  75e58d2a-5f02-4914-8181-a52047a3f76f
@@ -34,12 +35,14 @@ url_survey = "http://api.dxsurvey.com/api/Survey/getSurvey?surveyId={}".format(i
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('index1.html')
+    return render_template('index.html')
 
 
-@app.route("/create", methods=["GET", "POST"])
-def create():
+@app.route("/addquestions", methods=["GET", "POST"])
+def addquestions():
     form = CreateSurveyForm()
+    survey_name = session.get("active_survey_creation", None)
+    questions = json_serializer.get_questions()
     if form.validate_on_submit():
         if form.submit_question.data:
             if form.question_type.data == "rating":
@@ -49,13 +52,24 @@ def create():
             if form.question_type.data == "comment":
                 json_serializer.add_question("comment", form.question_title.data, 0, 5)
             flash("Question added", "success")
-            return redirect(url_for("create"))
+            return redirect(url_for("addquestions"))
         if form.submit_survey.data:
             json_serializer.create_json()
-            surveyjs_handler.new_survey(form.survey_name.data)
-            flash("Survey {} created".format(form.survey_name.data), "success")
+            surveyjs_handler.new_survey(survey_name)
+            flash('Umfrage "{}" created'.format(survey_name), "success")
             return redirect(url_for("about"))
-    return render_template("creation.html", title="Create a survey", form=form)
+    return render_template("creation_2.html", title="Frage hinzufügen", form=form, questions=questions)
+
+
+@app.route("/create", methods=["GET", "POST"])
+def create():
+    form = CreateSurveyForm()
+    if form.validate_on_submit():
+        session["active_survey_creation"] = form.survey_name.data
+        flash('Umfrage "{}" angelegt'.format(form.survey_name.data), "success")
+        return redirect(url_for("addquestions"))
+    return render_template("creation_1.html", title="Neue Umfrage anlegen", form=form)
+
 
 
 @app.route("/survey")

@@ -5,11 +5,7 @@
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Test legend</legend>
-                <div class="form-group">
-                    {{ form.survey_name.label(class="form-control-label") }}
-                    {{ form.survey_name(class="form-control form-control-lg") }}
-                </div>
+                <legend class="border-bottom mb-4">Neue Frage zur Umfrage hinzufügen</legend>
                 <div class="form-group">
                     {{ form.question_title.label(class="form-control-label") }}
                     {{ form.question_title(class="form-control form-control-lg") }}
@@ -27,6 +23,10 @@
                     {{ form.submit_survey.label(class="form-control-label") }}
                     {{ form.submit_survey(class="form-control form-control-lg") }}
                 </div>
+            <fieldset>
+                {{ % for question in questions }}
+
+            </fieldset>
         </form>
 
     </div>

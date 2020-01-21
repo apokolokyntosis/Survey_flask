@@ -4,12 +4,14 @@ from wtforms.validators import DataRequired
 
 
 class CreateSurveyForm(FlaskForm):
-    survey_name = StringField("Survey name")
-    submit_question = SubmitField("Add question")
-    question_title = StringField("Question")
-    question_type = SelectField("Question type", choices=[("rating", "rating"),
+    survey_name = StringField("Name der Umfrage")
+    submit_question = SubmitField("Frage hinzufügen")
+    question_title = StringField("Fragentext")
+    question_type = SelectField("Fragentyp", choices=[("rating", "rating"),
                                                           ("boolean", "boolean"), ("comment", "comment")],
                                 validators=[DataRequired()])
-    submit_survey = SubmitField("Create Survey")
+    submit_survey = SubmitField("Umfrage final erstellen")
+    create_survey = SubmitField("Umfrage anlegen")
+
 
 
