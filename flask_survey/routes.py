@@ -1,5 +1,6 @@
-from flask import Flask, render_template, Response, flash, url_for, redirect, session
-from flask_session import Session
+from flask import render_template, Response, flash, url_for, redirect, session
+from flask_survey.forms import CreateSurveyForm, AddQuestionsForm
+from flask_survey import app, json_serializer, surveyjs_handler
 import requests
 import io
 import os
@@ -8,22 +9,6 @@ import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from wordcloud import WordCloud
-
-from forms import CreateSurveyForm, CreateSurveyFor
-
-import surveyjs_handler
-import json_serializer
-
-application = app = Flask(__name__)
-app.config["SECRET_KEY"] = "760bb722fb969ca1ee600a8ac52b6a7d"
-# Session(app)
-
-# Survey1:
-# id  75e58d2a-5f02-4914-8181-a52047a3f76f
-# accesskey 3bc43120cf784d489aefbc4cec9b1268
-# ResultId 084644b9-b734-4d00-9afe-1fa82b803cb2
-# Survey 2:
-# id e8e348cb-6a20-4b7a-8669-9bdb1b207e44
 
 
 id = "7b8ea9b3-284d-42fb-b08a-09ceb317cf2e"
@@ -40,8 +25,7 @@ def home():
 
 @app.route("/addquestions", methods=["GET", "POST"])
 def addquestions():
-    form = CreateSurveyForm()
-    survey_name = session.get("active_survey_creation", None)
+    form = AddQuestionsForm()
     questions = json_serializer.get_questions()
     if form.validate_on_submit():
         if form.submit_question.data:
@@ -54,6 +38,8 @@ def addquestions():
             flash("Question added", "success")
             return redirect(url_for("addquestions"))
         if form.submit_survey.data:
+            survey_name = session.get("active_survey_creation", None)
+            print(f"Umfrage {survey_name} wird erstellt")
             json_serializer.create_json()
             surveyjs_handler.new_survey(survey_name)
             flash('Umfrage "{}" created'.format(survey_name), "success")
@@ -66,7 +52,8 @@ def create():
     form = CreateSurveyForm()
     if form.validate_on_submit():
         if form.create_survey.data:
-            # session["active_survey_creation"] = form.survey_name.data
+            json_serializer.clear_memory()
+            session["active_survey_creation"] = form.survey_name.data
             flash('Umfrage "{}" angelegt'.format(form.survey_name.data), "success")
             return redirect(url_for("addquestions"))
     return render_template("creation_1.html", title="Neue Umfrage anlegen", form=form)
@@ -238,31 +225,3 @@ def load_survey():
 def result_count():
     data = load_data()
     return data["ResultCount"]
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-# @app.route('/emotionsavg')
-# def emotionscores():
-#     data = load_data()
-#     scores = []
-#     for entry in data["Data"]:
-#         if "emotionsratings-widget" in entry.keys():
-#             scores.append(int(entry["emotionsratings-widget"]))
-#     return "Emotions average: " + str(sum(scores) / len(scores))
-
-
-# @app.route('/emotionsplot')
-# def plot_png():
-#     data = load_data()
-#     scores = []
-#     for entry in data["Data"]:
-#         if "emotionsratings-widget" in entry.keys():
-#             scores.append(int(entry["emotionsratings-widget"]))
-#     x, y = np.unique(np.asarray(scores), return_counts=True)
-#     fig = create_figure(x, y)
-#     output = io.BytesIO()
-#     FigureCanvas(fig).print_png(output)
-#     return Response(output.getvalue(), mimetype="image/png")
