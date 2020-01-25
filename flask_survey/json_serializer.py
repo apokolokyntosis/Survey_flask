@@ -1,4 +1,5 @@
 import json
+import random
 from flask import session
 
 
@@ -11,6 +12,7 @@ question_list = {}
 # creates a json from the dict
 # FIXME write json to program folder
 def create_json():
+    survey["showProgressBar"] = "bottom"
     with open("temp_survey.json", "w") as write_file:
         json.dump(survey, write_file, indent=4)
 
@@ -20,7 +22,7 @@ def add_question(question_type, question_text, min, max):
     if question_type == "rating":
         content = [{
             "type": question_type,
-            "name": "question",  # FIXME
+            "name": "question{}".format(random.randint(0, 10000)),
             "title": question_text,
             "minRateDescription": min,
             "maxRateDescription": max
@@ -34,7 +36,7 @@ def add_question(question_type, question_text, min, max):
     elif question_type == "boolean":
         content = [{
             "type": question_type,
-            "name": "question_pie",  # FIXME
+            "name": "question{}pie".format(random.randint(0, 10000)),
             "title": question_text,
             "indent": 5,
             "isRequired": "true",
@@ -50,7 +52,7 @@ def add_question(question_type, question_text, min, max):
     elif question_type == "comment":
         content = [{
             "type": question_type,
-            "name": "question_cloud",  # FIXME
+            "name": "question{}cloud".format(random.randint(0, 10000)),
             "title": question_text,
         }]
         survey["pages"].append({

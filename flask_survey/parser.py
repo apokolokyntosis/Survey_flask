@@ -4,7 +4,7 @@ accesskey = "3bc43120cf784d489aefbc4cec9b1268"
 
 
 def get_questions(uid):
-    dict = get_titles(load_survey(uid))
+    dict = get_titles(uid)
     questions = []
     for key in dict:
             questions.append(str(key))
@@ -21,7 +21,8 @@ def get_results_for_question(s_results, question):
 
 
 # creates a dict consisting of q_name : q_title
-def get_titles(s_data):
+def get_titles(uid):
+    s_data = load_survey(uid)
     s_data_clean = s_data["pages"]
     title_dict = {}
     for page in s_data_clean:
@@ -47,7 +48,8 @@ def result_count():
     data = load_results()
     return data["ResultCount"]
 
-# print(load_survey("a60d46ab-75c2-42fe-81cb-acc0653855c9"))
-# print(load_results("a60d46ab-75c2-42fe-81cb-acc0653855c9"))
-# print(get_questions("a60d46ab-75c2-42fe-81cb-acc0653855c9"))
+
+print(load_survey("e52c4e12-b1c0-41d7-b29c-61e8d3d61ba0"))
+# print(load_results("e52c4e12-b1c0-41d7-b29c-61e8d3d61ba0"))
+# print(get_titles("e52c4e12-b1c0-41d7-b29c-61e8d3d61ba0"))
 # print(get_results_for_question(load_results("a60d46ab-75c2-42fe-81cb-acc0653855c9"), "question1"))

@@ -74,32 +74,18 @@ def about():
     return render_template("about.html", title="about")
 
 
-# @app.route("/results")
-# def results():
-#     questions = parser.get_questions()
-#     for question in questions:
-#         if question.endswith("pie"):
-#             charts.create_pie(question)
-#         elif question.endswith("cloud"):
-#             charts.create_cloud(question)
-#         else:
-#             charts.create_bar(question)
-#     return render_template("results.html", questions=questions)
-
-@app.route("/results/<uid>")
+@app.route("/results/<uid>", methods=["GET", "POST"])
 def results(uid):
     questions = parser.get_questions(uid)
+    s_results = parser.load_results(uid)
+    title_dict = parser.get_titles(uid)
     for question in questions:
-        if question.endswith("pie"):
-            charts.create_pie(question)
-        elif question.endswith("cloud"):
-            charts.create_cloud(question)
-        else:
-            charts.create_bar(question)
+        charts.create_charts(question, s_results, title_dict)
+
     return render_template("results.html", questions=questions, uid=uid)
 
 
 @app.route('/resultsraw')
 def resultsraw():
-    data = parser.load_data()
+    data = parser.load_results()
     return data
