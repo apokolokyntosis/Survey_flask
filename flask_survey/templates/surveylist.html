@@ -12,6 +12,9 @@
             <div class="col-sm">
                 {{ survey.get("PostId") }}
             </div>
+            <div class="col-sm">
+                <a href="{{ url_for("results", uid=survey.get("Id")) }}"> Ergebnis </a>
+            </div>
         </div>
     {% endfor %}
 
