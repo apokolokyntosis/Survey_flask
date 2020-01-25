@@ -2,12 +2,15 @@
 
 ## Survey list
 * [ ] bootstrap tabelle
-* [ ] link auf die entsprechenden surveys
-* [ ] globals setzen beim klick drauf
+* [x] link auf die entsprechenden surveys
+* [ ] link auf ergebnis
+
+##
+
 
 ## Survey
 * [x] kompatibel mit base.html machen
-* [ ] id übergeben können
+* [x] id übergeben können
 
 ## HTML
 * 

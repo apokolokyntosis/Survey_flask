@@ -1,5 +1,5 @@
 from flask import render_template, flash, url_for, redirect, session
-from flask_survey.forms import CreateSurveyForm, AddQuestionsForm, ChooseSurveyForm
+from flask_survey.forms import CreateSurveyForm, AddQuestionsForm
 from flask_survey import app, json_serializer, surveyjs_handler, charts, parser, lists
 
 
@@ -61,17 +61,12 @@ def survey(uid):
 
 @app.route("/surveylist", methods=["GET", "POST"])
 def surveylist():
-    form = ChooseSurveyForm()
     survey_list = lists.get_lists()
     id_list = []
     for survey in survey_list:
         id_list.append(survey.get("Id"))
-    # if form.validate_on_submit():
-    #     session["active_survey_creation"] = form.id.data
-        # flash('Umfrage "{}" ausgewählt'.format(form.id.data), "success")
-    # return redirect(url_for("survey"))
 
-    return render_template("surveylist.html", survey_list=survey_list, id_list=id_list, form=form)
+    return render_template("surveylist.html", survey_list=survey_list, id_list=id_list)
 
 
 @app.route("/about")
@@ -79,9 +74,21 @@ def about():
     return render_template("about.html", title="about")
 
 
-@app.route("/results")
-def results():
-    questions = parser.get_questions()
+# @app.route("/results")
+# def results():
+#     questions = parser.get_questions()
+#     for question in questions:
+#         if question.endswith("pie"):
+#             charts.create_pie(question)
+#         elif question.endswith("cloud"):
+#             charts.create_cloud(question)
+#         else:
+#             charts.create_bar(question)
+#     return render_template("results.html", questions=questions)
+
+@app.route("/results/<uid>")
+def results(uid):
+    questions = parser.get_questions(uid)
     for question in questions:
         if question.endswith("pie"):
             charts.create_pie(question)
@@ -89,7 +96,7 @@ def results():
             charts.create_cloud(question)
         else:
             charts.create_bar(question)
-    return render_template("results.html", questions=questions)
+    return render_template("results.html", questions=questions, uid=uid)
 
 
 @app.route('/resultsraw')

@@ -4,7 +4,7 @@
     {% for survey in survey_list %}
         <div class="row">
             <div class="col-sm">
-                {{ survey.get("Name") }}
+                <a href="{{ url_for("survey", uid=survey.get("Id")) }}"> {{ survey.get("Name") }} </a>
             </div>
             <div class="col-sm">
                 {{ survey.get("Id") }}
@@ -14,4 +14,5 @@
             </div>
         </div>
     {% endfor %}
+
 {% endblock %}
