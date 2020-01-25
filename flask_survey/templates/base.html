@@ -7,6 +7,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://surveyjs.azureedge.net/1.1.32/survey.jquery.min.js"></script>
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='assets/css/main.css') }}">
@@ -34,7 +35,7 @@
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
-              <a class="nav-item nav-link" href="{{ url_for("survey") }}">Aktuelle Umfrage</a>
+{#              <a class="nav-item nav-link" href="{{ url_for("survey") }}">Aktuelle Umfrage</a>#}
               <a class="nav-item nav-link" href="{{ url_for("about") }}">About</a>
             </div>
           </div>

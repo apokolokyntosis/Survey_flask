@@ -1,9 +1,13 @@
 Survey.StylesManager.applyTheme("bootstrap");
 
-var surveyJSON = { surveyId: 'ee67b846-7a75-44af-9ea4-ab88714fde70'};
+var uid = $("#uid").html();
+var postid = $("#postid").html();
+
+
+var surveyJSON = { surveyId: uid};
 
 function sendDataToServer(survey) {
-    survey.sendResult('001e5548-22c9-48e2-a577-e081733bb173');
+    survey.sendResult(postid);
 }
 
 var survey = new Survey.Model(surveyJSON);

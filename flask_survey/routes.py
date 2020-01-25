@@ -1,5 +1,5 @@
 from flask import render_template, flash, url_for, redirect, session
-from flask_survey.forms import CreateSurveyForm, AddQuestionsForm
+from flask_survey.forms import CreateSurveyForm, AddQuestionsForm, ChooseSurveyForm
 from flask_survey import app, json_serializer, surveyjs_handler, charts, parser, lists
 
 
@@ -45,15 +45,33 @@ def create():
     return render_template("creation_1.html", title="Neue Umfrage anlegen", form=form)
 
 
-@app.route("/survey")
-def survey():
-    return render_template("survey.html", title="survey")
-
-
-@app.route("/surveylist")
-def surveylist():
+@app.route("/survey/<uid>")
+def survey(uid):
     survey_list = lists.get_lists()
-    return render_template("surveylist.html", survey_list=survey_list)
+    dict_id = {}
+
+    for survey in reversed(survey_list):
+        dict_id[survey.get("Id")] = [survey.get("PostId"), survey.get("Name")]
+
+    postid = dict_id[uid][0]
+    name = dict_id[uid][1]
+
+    return render_template("survey.html", title="survey", postid=postid, uid=uid, name=name)
+
+
+@app.route("/surveylist", methods=["GET", "POST"])
+def surveylist():
+    form = ChooseSurveyForm()
+    survey_list = lists.get_lists()
+    id_list = []
+    for survey in survey_list:
+        id_list.append(survey.get("Id"))
+    # if form.validate_on_submit():
+    #     session["active_survey_creation"] = form.id.data
+        # flash('Umfrage "{}" ausgewählt'.format(form.id.data), "success")
+    # return redirect(url_for("survey"))
+
+    return render_template("surveylist.html", survey_list=survey_list, id_list=id_list, form=form)
 
 
 @app.route("/about")
