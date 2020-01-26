@@ -16,22 +16,28 @@
                 </div>
             </fieldset>
                 <div class="btn btn-outline-info">
-                    {{ form.submit_question.label(class="form-control-label") }}
                     {{ form.submit_question(class="form-control form-control-lg") }}
                 </div>
                 <div class="btn btn-outline-info">
-                    {{ form.submit_survey.label(class="form-control-label") }}
+{#                    {{ form.submit_survey.label(class="form-control-label") }}#}
                     {{ form.submit_survey(class="form-control form-control-lg") }}
                 </div>
             <fieldset>
-                {% for key, value in questions.items() %}
-                    <div>
-                        {{ key }}: {{value}}
-                    </div>
-                {% endfor %}
-
-
-
+                <ul class="list-group">
+                    {% for key, value in questions.items() %}
+                            {% if value == "rating" %}
+                                <li class="list-group-item"> {{ key }}: Numerische Wertung</li>
+                            {% elif value == "commentary" %}
+                                <li class="list-group-item"> {{ key }}: Kommentar</li>
+                            {% elif value == "text" %}
+                                <li class="list-group-item"> {{ key }}: Eingabe</li>
+                            {% elif value == "radiogroup" %}
+                                <li class="list-group-item"> {{ key }}: Auswahl</li>
+                            {% else %}
+                                <li class="list-group-item"> {{ key }}: Ja/Nein</li>
+                            {% endif %}
+                    {% endfor %}
+                </ul>
             </fieldset>
         </form>
 

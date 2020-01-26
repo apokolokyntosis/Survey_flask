@@ -18,14 +18,14 @@ def create_json():
 
 
 # adds question to the survey dict
-def add_question(question_type, question_text, min, max):
+def add_question(question_type, question_text, choices=None):
     if question_type == "rating":
         content = [{
             "type": question_type,
             "name": "question{}".format(random.randint(0, 10000)),
             "title": question_text,
-            "minRateDescription": min,
-            "maxRateDescription": max
+            "minRateDescription": 0,
+            "maxRateDescription": 5
         }]
         survey["pages"].append({
             "name": "",
@@ -54,6 +54,31 @@ def add_question(question_type, question_text, min, max):
             "type": question_type,
             "name": "question{}cloud".format(random.randint(0, 10000)),
             "title": question_text,
+        }]
+        survey["pages"].append({
+            "name": "",
+            "elements": content
+        })
+        question_list[question_text] = question_type
+
+    elif question_type == "text":
+        content = [{
+            "type": question_type,
+            "name": "question{}cloud".format(random.randint(0, 10000)),
+            "title": question_text,
+        }]
+        survey["pages"].append({
+            "name": "",
+            "elements": content
+        })
+        question_list[question_text] = question_type
+
+    elif question_type == "radiogroup":
+        content = [{
+            "type": question_type,
+            "name": "question{}pie".format(random.randint(0, 10000)),
+            "title": question_text,
+            "choices": choices
         }]
         survey["pages"].append({
             "name": "",

@@ -6,3 +6,16 @@
 /flask_survey/static/assets/charts/question1.png
 /venv/
 /venv2/
+/flask_survey/static/assets/charts/
+.idea/.gitignore
+.idea/Survey_flask.iml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/other.xml
+.idea/vcs.xml
+Survey_flask_2.zip
+__pycache__/
+flask_survey/__pycache__/
+mail.txt
+temp_survey.json

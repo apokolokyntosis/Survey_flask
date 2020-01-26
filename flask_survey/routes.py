@@ -1,6 +1,7 @@
 from flask import render_template, flash, url_for, redirect, session
-from flask_survey.forms import CreateSurveyForm, AddQuestionsForm
+
 from flask_survey import app, json_serializer, surveyjs_handler, charts, parser, lists
+from flask_survey.forms import CreateSurveyForm, AddQuestionsForm
 
 
 @app.route('/')
@@ -16,11 +17,14 @@ def addquestions():
     if form.validate_on_submit():
         if form.submit_question.data:
             if form.question_type.data == "rating":
-                json_serializer.add_question("rating", form.question_title.data, 0, 5)
+                json_serializer.add_question("rating", form.question_title.data)
             if form.question_type.data == "boolean":
-                json_serializer.add_question("boolean", form.question_title.data, 0, 5)
+                json_serializer.add_question("boolean", form.question_title.data)
             if form.question_type.data == "comment":
-                json_serializer.add_question("comment", form.question_title.data, 0, 5)
+                json_serializer.add_question("comment", form.question_title.data)
+            # if form.question_type.data == "single_input":
+            #     choices =
+            #     json_serializer.add_question("text", form.question_title.data, choices)
             flash("Question added", "success")
             return redirect(url_for("addquestions"))
         if form.submit_survey.data:
@@ -62,11 +66,7 @@ def survey(uid):
 @app.route("/surveylist", methods=["GET", "POST"])
 def surveylist():
     survey_list = lists.get_lists()
-    id_list = []
-    for survey in survey_list:
-        id_list.append(survey.get("Id"))
-
-    return render_template("surveylist.html", survey_list=survey_list, id_list=id_list)
+    return render_template("surveylist.html", survey_list=survey_list)
 
 
 @app.route("/about")
