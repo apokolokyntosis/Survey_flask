@@ -22,9 +22,14 @@ def addquestions():
                 json_serializer.add_question("boolean", form.question_title.data)
             if form.question_type.data == "comment":
                 json_serializer.add_question("comment", form.question_title.data)
-            # if form.question_type.data == "single_input":
-            #     choices =
-            #     json_serializer.add_question("text", form.question_title.data, choices)
+            if form.question_type.data == "text":
+                json_serializer.add_question("text", form.question_title.data)
+            if form.question_type.data == "radiogroup":
+                choices_input = form.radiogroup_choices.data
+                choices = choices_input.split(";")
+                for strings in choices:
+                    strings.lstrip()
+                json_serializer.add_question("radiogroup", form.question_title.data, choices)
             flash("Question added", "success")
             return redirect(url_for("addquestions"))
         if form.submit_survey.data:

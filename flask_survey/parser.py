@@ -44,12 +44,12 @@ def load_survey(uid):
     return survey_json
 
 
-def result_count():
-    data = load_results()
+def result_count(uid):
+    data = load_results(uid)
     return data["ResultCount"]
 
 
-print(load_survey("e52c4e12-b1c0-41d7-b29c-61e8d3d61ba0"))
+# print(load_survey("e52c4e12-b1c0-41d7-b29c-61e8d3d61ba0"))
 # print(load_results("e52c4e12-b1c0-41d7-b29c-61e8d3d61ba0"))
 # print(get_titles("e52c4e12-b1c0-41d7-b29c-61e8d3d61ba0"))
 # print(get_results_for_question(load_results("a60d46ab-75c2-42fe-81cb-acc0653855c9"), "question1"))

@@ -4,7 +4,7 @@
     <div class="content-section">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
-            <fieldset class="form-group">
+            <fieldset class="form-group clearfix">
                 <legend class="border-bottom mb-4">Neue Frage zur Umfrage hinzufügen</legend>
                 <div class="form-group">
                     {{ form.question_title.label(class="form-control-label") }}
@@ -14,11 +14,14 @@
                     {{ form.question_type.label(class="form-control-label") }}
                     {{ form.question_type(class="form-control form-control-lg") }}
                 </div>
+                <div id="radio_choices" style="display: none">
+                    {{ form.radiogroup_choices(placeholder="Auswahlmöglichkeiten, durch ';' getrennt", class="form-control form-control-lg") }}
+                </div>
             </fieldset>
                 <div class="btn btn-outline-info">
                     {{ form.submit_question(class="form-control form-control-lg") }}
                 </div>
-                <div class="btn btn-outline-info">
+                <div class="btn btn-outline-info float-right">
 {#                    {{ form.submit_survey.label(class="form-control-label") }}#}
                     {{ form.submit_survey(class="form-control form-control-lg") }}
                 </div>
@@ -33,7 +36,7 @@
                                 <li class="list-group-item"> {{ key }}: Eingabe</li>
                             {% elif value == "radiogroup" %}
                                 <li class="list-group-item"> {{ key }}: Auswahl</li>
-                            {% else %}
+                            {% elif value == "boolean" %}
                                 <li class="list-group-item"> {{ key }}: Ja/Nein</li>
                             {% endif %}
                     {% endfor %}

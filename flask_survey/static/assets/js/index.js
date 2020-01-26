@@ -15,3 +15,14 @@ $("#surveyContainer").Survey({
     model: survey,
     onComplete: sendDataToServer
 });
+
+
+$("#question_type").change(function() {
+    if ($("#question_type").val() == "radiogroup") {
+        console.log("asdas");
+        $("#radio_choices").attr("style", "display: block")
+    }
+        else {
+        $("#radio_choices").attr("style", "display: none")
+    }
+});

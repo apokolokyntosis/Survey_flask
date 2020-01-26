@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField
+from wtforms import StringField, SubmitField, SelectField, HiddenField
 from wtforms.validators import DataRequired
 
 
@@ -11,6 +11,7 @@ class AddQuestionsForm(FlaskForm):
                                                       ("text", "Text"), ("radiogroup", "Auswahl")],
                                 validators=[DataRequired()])
     submit_survey = SubmitField("Umfrage final erstellen")
+    radiogroup_choices = StringField("Optionen")
 
 
 class CreateSurveyForm(FlaskForm):
