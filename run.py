@@ -1,4 +1,4 @@
-from flask_survey import app
+from flask_survey import application
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)

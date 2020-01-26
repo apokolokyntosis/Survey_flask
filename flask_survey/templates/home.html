@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>
-        Home
-    </div>
+        <div class="content-section">
+            Möchten Sie eine neue Umfrage erstellen? Dann klicken sie <a href="{{ url_for("create") }}">hier</a>.<br>
+            Möchsten sie einen Überblick über alle aktuell aktiven Umfragen erhalten, dann klicken sie <a href="{{ url_for("surveylist") }}">hier</a>.
+        </div>
 {% endblock %}

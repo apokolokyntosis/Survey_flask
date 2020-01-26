@@ -1,5 +1,4 @@
 from flask import render_template, flash, url_for, redirect, session
-
 from flask_survey import app, json_serializer, surveyjs_handler, charts, parser, lists
 from flask_survey.forms import CreateSurveyForm, AddQuestionsForm
 
@@ -25,11 +24,15 @@ def addquestions():
             if form.question_type.data == "text":
                 json_serializer.add_question("text", form.question_title.data)
             if form.question_type.data == "radiogroup":
-                choices_input = form.radiogroup_choices.data
-                choices = choices_input.split(";")
-                for strings in choices:
-                    strings.lstrip()
-                json_serializer.add_question("radiogroup", form.question_title.data, choices)
+                if not form.radiogroup_choices.data:
+                    flash("Bitte Auswahlmöglichkeiten angeben.", "danger")
+                    return redirect(url_for("addquestions"))
+                else:
+                    choices_input = form.radiogroup_choices.data
+                    choices = choices_input.split(";")
+                    for strings in choices:
+                        strings.lstrip()
+                    json_serializer.add_question("radiogroup", form.question_title.data, choices)
             flash("Question added", "success")
             return redirect(url_for("addquestions"))
         if form.submit_survey.data:

@@ -18,33 +18,52 @@
                     {{ form.radiogroup_choices(placeholder="Auswahlmöglichkeiten, durch ';' getrennt", class="form-control form-control-lg") }}
                 </div>
             </fieldset>
-                <div class="btn btn-outline-info">
-                    {{ form.submit_question(class="form-control form-control-lg") }}
+                <div class="btn">
+                    {{ form.submit_question(class="form-control form-control-lg btn-outline-dark") }}
                 </div>
-                <div class="btn btn-outline-info float-right">
-{#                    {{ form.submit_survey.label(class="form-control-label") }}#}
-                    {{ form.submit_survey(class="form-control form-control-lg") }}
+                <div class="btn float-right">
+                    {{ form.submit_survey(class="form-control form-control-lg btn-outline-danger") }}
                 </div>
-            <fieldset>
-                <ul class="list-group">
-                    {% for key, value in questions.items() %}
-                            {% if value == "rating" %}
-                                <li class="list-group-item"> {{ key }}: Numerische Wertung</li>
-                            {% elif value == "commentary" %}
-                                <li class="list-group-item"> {{ key }}: Kommentar</li>
-                            {% elif value == "text" %}
-                                <li class="list-group-item"> {{ key }}: Eingabe</li>
-                            {% elif value == "radiogroup" %}
-                                <li class="list-group-item"> {{ key }}: Auswahl</li>
-                            {% elif value == "boolean" %}
-                                <li class="list-group-item"> {{ key }}: Ja/Nein</li>
-                            {% endif %}
-                    {% endfor %}
-                </ul>
-            </fieldset>
         </form>
 
     </div>
+
+    <div class="content-section">
+        <h5> Hinzugefügte Fragen:</h5>
+
+        <div class="table-responsive">
+            <table class="table table-borderless">
+                <thead>
+                <tr>
+                    <th style="width: 20%" scope="col">Typ</th>
+                    <th style="width: 80%" scope="col">Frage</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in questions.items() %}
+                    <tr>
+                        {% if value == "rating" %}
+                            <td>Numerische Wertung</td>
+                            <td>{{ key }}</td>
+                        {% elif value == "commentary" %}
+                            <td>Kommentar</td>
+                            <td>{{ key }}</td>
+                        {% elif value == "text" %}
+                            <td> Eingabe</td>
+                            <td>{{ key }}</td>
+                        {% elif value == "radiogroup" %}
+                            <td>Auswahl</td>
+                            <td>{{ key }}</td>
+                        {% elif value == "boolean" %}
+                            <td>Ja/Nein</td>
+                            <td>{{ key }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
     <div class="border-top pt-3">
         <small class="text-muted">
 {#            Want to see results? <a class="ml-2" href="{{ url_for("results") }}"> Here </a>#}
