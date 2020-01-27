@@ -2,9 +2,12 @@
 
 {% block content %}
     {% for question in questions %}
+        <div class="content-section">
+        <h5 class="text-center"> {{ title_dict[question] }}</h5>
         <fieldset class="form-group">
             <img src="../static/assets/charts/{{question}}.png" alt="chart">
         </fieldset>
+        </div>
     {%  endfor %}
 {%  endblock %}
 

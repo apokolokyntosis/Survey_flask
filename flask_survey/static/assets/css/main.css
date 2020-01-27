@@ -55,6 +55,12 @@ a.article-title:hover {
   margin-right: 16px;
 }
 
+#creatorlink {
+  /*text-shadow: 0px 0px 1px white;*/
+  /*-webkit-text-stroke: 0px white;*/
+  color: #cbd5db;
+}
+
 .article-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;

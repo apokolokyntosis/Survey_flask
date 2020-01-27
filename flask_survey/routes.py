@@ -90,7 +90,7 @@ def results(uid):
     for question in questions:
         charts.create_charts(question, s_results, title_dict)
 
-    return render_template("results.html", questions=questions, uid=uid)
+    return render_template("results.html", questions=questions, uid=uid, title_dict=title_dict)
 
 
 @app.route('/resultsraw')
